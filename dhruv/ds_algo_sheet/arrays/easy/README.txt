@@ -1,0 +1,2 @@
+- Two pointer is not just about starting from ends but could also be something where both the pointers start from one end but end on the other side. (quick sort's pivot function and 2_move_zeros_to_end)
+- 
