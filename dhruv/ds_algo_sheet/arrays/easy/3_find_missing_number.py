@@ -24,5 +24,4 @@ def xor_solution(arr):
 
     return xor_all
 
-
 print(xor_solution([3, 0, 1]))

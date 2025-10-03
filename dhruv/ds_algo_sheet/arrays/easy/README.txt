@@ -1,2 +1,3 @@
 - Two pointer is not just about starting from ends but could also be something where both the pointers start from one end but end on the other side. (quick sort's pivot function and 2_move_zeros_to_end)
-- 
+- for xor default value is 0. 0^0=0 and 0^1=1 (3)
+- missed corner case where all the elements in the array could be same or there's just one element in the array (4)
