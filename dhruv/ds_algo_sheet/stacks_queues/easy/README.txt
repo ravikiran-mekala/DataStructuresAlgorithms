@@ -1,0 +1,3 @@
+- Always go through the whole code using a basic example. you are surely gonna miss something (1)
+- For circular queue, you should increment self.st for pop - (3)
+- 

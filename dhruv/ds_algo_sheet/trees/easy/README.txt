@@ -1,0 +1,1 @@
+- I missed reading the question properly. It's the distance from root to leaf node and not nodes with just one none (6)

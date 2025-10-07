@@ -1,0 +1,3 @@
+- You need to update the self.size for each and every function as the one in __init__ is assigned in the beginning and not updated for later calls. (1, 2)
+- Check the logic to create stack using ONE queue (3)
+- Go over the logic to create queue using TWO stacks (4)
