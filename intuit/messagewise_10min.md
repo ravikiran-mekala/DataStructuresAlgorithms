@@ -27,9 +27,12 @@
 • **Not Just for Email**: I built it so we could add any type of problem later—payment issues, inventory problems, server crashes—but we started with email to prove it worked as the initial proof of concept. 
 
 • **How It Works**: 
-  - Domain-agnostic pipeline: Sources -> Kinesis Firehose → S3, with Glue handling transformation, aggregation, PII redaction.
-  - We turned documents to chunks for creating embedding via Bedrock Titan pre-trained model.
+  - Domain-agnostic pipeline: Sources (SES email events, cloudwatch logs, or any other resource) → Kinesis Firehose → S3, with Glue handling transformation, aggregation, PII redaction → S3 processed.
+  - Athena table sits on top of S3 processed bucket.
+  - We turned documents (S3 processed bucket data, internal wikis, runbooks, past incident information) to chunks for creating embedding via Bedrock Titan pre-trained model → OpenSearch Index.
   - Hybrid retrieval: OpenSearch combining BM25 keyword matching + vector similarity to fetch relevant information for LLM to process.
+  - User query → Lambda → async Parallel Retrieval jobs (athena query, vector search semantics to OpenSearch, Keyword Search BM25 to OpenSearch) → LLM processing with temp - 0.2
+  - Once the data is fed to Bedrock Claude Opus 4 LLM model over other models we get the json response where the response is formatted for the user interface.
 
 • **What Happens When Someone Asks a Question**: If someone asks "Why did Yahoo reject our emails yesterday?", the system executes parallel operations—querying Athena for patterns, searching knowledge base for ISP guidelines, verifying DNS records, analyzing rate limits—all assembled by Lambda orchestrator and sent to Bedrock LLM with 0.2 temperature for consistent responses.
 
