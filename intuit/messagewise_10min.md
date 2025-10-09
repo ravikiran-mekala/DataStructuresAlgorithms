@@ -6,7 +6,7 @@
 
 • **The Problem I Found**: Our support team of 10 people got about 50 alerts every day. They had to ask developers for help 70% of the time—not because the problems were hard, but because the answers were buried in cloudwatch logs, runbooks, wikis, and tribal knowledge.
 
-• **Why This Mattered**:  This pattern consumed 30% of developer time on repetitive questions that had been solved before, blocking feature development
+• **Why This Mattered**:  This pattern consumed 30% of developer time on repetitive questions that had been solved before, impeding feature development
 
 • **My Idea**: Apply RAG (Retrieval-Augmented Generation) and LLMs through a chat bot to help support engineers find answers on their own, without always needing developers.
 
@@ -16,7 +16,7 @@
 
 • **Bad Cycle**: 70% of problems got sent to developers, who were too busy to write down solutions, so the same problems kept coming back.
 
-• **Where to Start**: We looked at all our tickets and found that 60% were about email delivery related problems. Sur La Table sends 45 million emails every month (about 1.8 million per day, up to 3.8 million during sales). So, this was our highest-impact opportunity.
+• **Where to Start**: We looked at all our tickets and found that 60% were about email delivery related problems due to deliverability dips, bounces spike, or ISP throttles. Sur La Table sends 45 million emails every month (about 1.8 million per day, up to 3.8 million during sales). So, this was our highest-impact opportunity.
 
 • **Money on the Line**: For example, when 5% of promotional emails don't get delivered, we lose about 2 million emails that month, which means about $120,000 in lost sales. Other than this, any emails not delivered to customers regarding order details, order tracking, and cooking class details will have an indirect eventual impact on the revenue due to bad customer experience. This made email problems the perfect place to start.
 
@@ -27,7 +27,7 @@
 • **Not Just for Email**: I built it so we could add any type of problem later—payment issues, inventory problems, server crashes—but we started with email to prove it worked as the initial proof of concept. 
 
 • **How It Works**: 
-  - Domain-agnostic pipeline: Sources -> Kinesis Firehose → S3, with Glue handling PII redaction.
+  - Domain-agnostic pipeline: Sources -> Kinesis Firehose → S3, with Glue handling transformation, aggregation, PII redaction.
   - We turned documents to chunks for creating embedding via Bedrock Titan pre-trained model.
   - Hybrid retrieval: OpenSearch combining BM25 keyword matching + vector similarity to fetch relevant information for LLM to process.
 
@@ -45,7 +45,7 @@
 
 • **The Team**: I led the technical work, mentored a junior developer on building statistics and also in the initial stages of Data cleaning, worked with our product manager to pick what to build first, and partnered with data scientists who found that hybrid search outperformed only BM 25 by 23%.
 
-• **Learning as We Went**: Every unhelpful answer created a ticket for improvement, and we met weekly to make the system better based on what people actually needed.
+• **Learning as We Went**: The customer feedback is stored in a postgres data base along with other information like prompt and the result and citations. This information is accessed and fed back in to the system to improve it. 
 
 ## Results: It Worked (2 minutes)
 
@@ -55,16 +55,9 @@
 
 • **Happy Team**: Support engineers feel more confident solving problems on their own. We fixed 19 outdated guides, removed broken links, and now problems get proper write-ups as it is used as one of the sources for the LLM to get better.
 
-~~• **Saving Money**: The email improvements alone protect about $120,000 per month in sales, and each question costs only 8 cents to answer.~~
-
 ## What's Next (1 minute)
 
-• **Growing the System**: Adding new problem types every few months—payments, inventory, use something similar on our website to help customers find the product of their choice without going through a long list of products. There is also plans to make use of agentic AI to automatically look at the issues, go through the logs, and other documents, fetch the code from the repository, make fixes and create a PR for review.
-
-• **What I Learned**: 
-  - Start with one clear problem to prove the idea works
-  - Consistency matters more than fancy features for work tools
-  - People need to see proof—that's why citations are required
-  - Building a platform takes more time upfront but pays off later
-
-• **The Big Picture**: AI doesn't replace people—it makes them better at their jobs. Support engineers are now problem-solvers instead of message-passers.
+• **Growing the System**: 
+1. Adding new problem types every few months—payments, inventory to the flow.
+2. Use something similar on our website to help customers find the product of their choice without going through a long list of products. 
+3. There is also plans to make use of agentic AI to automatically look at the issues, go through the logs, and other documents, fetch the code from the repository, make fixes and create a PR for review.
