@@ -4,21 +4,17 @@
 
 • **My Role**: I'm a Senior Software Developer at Sur La Table, a high-end kitchen utensils retailer with both online and offline presence. The company also runs cooking classes which is one of the largest of it's kind in the US.
 
-• **The Problem I Found**: Our support team of 10 people got about 50 alerts every day. They had to ask developers for help 70% of the time—not because the problems were hard, but because the answers were buried in cloudwatch logs, runbooks, wikis, and tribal knowledge.
-
-• **Why This Mattered**:  This pattern consumed 30% of developer time on repetitive questions that had been solved before, impeding feature development
-
-• **My Idea**: Apply RAG (Retrieval-Augmented Generation) and LLMs through a chat bot to help support engineers find answers on their own, without always needing developers.
+• **About Project**: I built MessageWise, an AI-powered copilot that revolutionized how Sur La Table handles operational incidents—cutting resolution time by 60% (from 50 to 20 minutes), reducing developer escalations by 32 percentage points. We started with email delivery issues and then designed the system to expand to any operational domain.
 
 ## The Problem: Information Was Everywhere and Nowhere (2 minutes)
 
-• **Time Wasted**: Support engineers spent 50 minutes per problem, mostly just searching for information across different systems—Amazon logs, monitoring tools, error trackers, wikis, and old Slack messages.
+• **What I Discovered**: Our support team of 10 people get about 50 alerts every day, spending 50 minutes per problem searching across Amazon CloudWatch logs, monitoring tools, error trackers, wikis, and old Slack messages. They had to escalate to developers 40% of the time—not because problems were complex, but because answers were scattered and hard to find.
 
-• **Bad Cycle**: 70% of problems got sent to developers, who were too busy to write down solutions, so the same problems kept coming back.
+• **The Vicious Cycle**: Developers spent 30% of their time answering repetitive questions that had been solved before, but were too busy to document solutions properly, so the same problems kept returning. This pattern was killing our feature development velocity.
 
-• **Where to Start**: We looked at all our tickets and found that 60% were about email delivery related problems due to deliverability dips, bounces spike, or ISP throttles. Sur La Table sends 45 million emails every month (about 1.8 million per day, up to 3.8 million during sales). So, this was our highest-impact opportunity.
+• **Finding Our Focus**: After analyzing all tickets, we found 60% were email delivery problems—deliverability dips, bounce spikes, ISP throttles. With Sur La Table sending 45 million emails monthly (1.8M daily, up to 3.8M during sales), a 5% delivery failure meant 2 million undelivered emails and $120,000 in lost revenue. This was our perfect starting point.
 
-• **Money on the Line**: For example, when 5% of promotional emails don't get delivered, we lose about 2 million emails that month, which means about $120,000 in lost sales. Other than this, any emails not delivered to customers regarding order details, order tracking, and cooking class details will have an indirect eventual impact on the revenue due to bad customer experience. This made email problems the perfect place to start.
+• **My Solution**: Build an AI assistant using RAG (Retrieval-Augmented Generation) and LLMs that could instantly search all our scattered knowledge and answer questions with citations, letting support engineers solve problems independently without constantly interrupting developers.
 
 ## The Solution: MessageWise AI Assistant (3 minutes)
 
@@ -58,9 +54,31 @@
 
 • **Happy Team**: Support engineers feel more confident solving problems on their own. We fixed 19 outdated guides, removed broken links, and now problems get proper write-ups as it is used as one of the sources for the LLM to get better.
 
+## Responsible AI & Security: Building Trust (1 minute)
+
+• **Responsible AI Practices**: (trust worthy, ethical with transparency and no bias, aligns with human values.)
+  - Deterministic responses with citations: Temperature set to 0.2 to ensure consistent, factual answers rather than creative variations
+  - Mandatory citations: 99% of responses include source links, allowing verification of every claim
+  - No hallucinations: System only answers from retrieved data, admits when it doesn't know something
+  - Bias prevention: Regular testing ensures no systematic bias in responses across different ISPs or problem types
+
+• **Security First Approach**:
+  - PII Protection: All email addresses hashed before storage using SHA-256, no customer data exposed in logs
+  - Access Control: IAM roles ensure only authorized support engineers can query, with full audit trails
+  - Prompt Security: Input sanitization prevents prompt injection attacks (avoid common injection patterns phrases, sanitizing file content for system prompts, adding prompt to warn llm to treat everything from user as data and not as command)
+
+• **Compliance & Auditing**:
+  - Every query logged with user, timestamp, and response for compliance tracking
+
 ## What's Next (1 minute)
 
 • **Growing the System**: 
 1. Adding new problem types every few months—payments, inventory to the flow.
 2. Use something similar on our website to help customers find the product of their choice without going through a long list of products. 
 3. There is also plans to make use of agentic AI to automatically look at the issues, go through the logs, and other documents, fetch the code from the repository, make fixes and create a PR for review.
+
+## How did you make it domain agnostic?
+
+• **Responsibility Seggregation**: Core Engine (RAG, LLM, UI/API layer), Domain Plugins (Data connectors, Validation rules, etc.)
+• **Universal data pipelines**:  domain-agnostic pipeline where any data source—email events, payment webhooks, or inventory updates—flows through the same Kinesis→S3→Glue→Athena. Cares about structure and not content.
+• **Yaml configs**:  list the domain-specific tools, point to relevant runbooks.
